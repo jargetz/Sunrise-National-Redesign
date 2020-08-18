@@ -70,3 +70,23 @@ if ( ! function_exists( 'surnise_national_header_style' ) ) :
 		<?php
 	}
 endif;
+
+/**
+ * function to synchronize Action posts with EveryAction API call
+ */
+function synchronize_everyaction_api_to_posts() {
+	$actions_json = file_get_contents('everyaction/everyaction_actions.json');
+	$actions = json_decode($actions_json, true)['items'];
+	foreach($actions as $action){
+		$eventId = strval($action['eventId']);
+		$event = json_decode(file_get_contents('everyaction/events/'.$eventId.'.json'), true);
+		$action['event'] = $event;
+		echo '<pre>'; print_r($event); echo '</pre>';
+	}
+	//echo $response['items'][0]['eventId'];
+}
+add_action( 'after_setup_theme', 'synchronize_everyaction_api_to_posts' );
+
+function retrieve_everyaction_event() {
+
+}
